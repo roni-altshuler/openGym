@@ -41,6 +41,7 @@
 // workout from a past week that happens to carry this week's name must never count.
 
 import { isoOf, weekKey, weekStartOf } from './format.js'
+import { cycleWeekIndex } from '../../../api/training-cycle.js'
 
 const routineIdsOf = w => (Array.isArray(w.routineIds) ? w.routineIds : (w.routineId ? [w.routineId] : []))
 const nameParts = w => String(w.name || '').split(' + ')
@@ -69,6 +70,7 @@ const countsFor = (S, q, w, id) => routineIdsOf(w).includes(id)
   && ((w.start ?? 0) >= q.since
     || (q.strict !== true && String(w.d || '') >= q.startsOn && nameParts(w).includes(S.routines.find(r => r.id === id)?.name)))
 const isDone = (S, q, id) => S.workouts.some(w => countsFor(S, q, w, id))
+const skipped = (q, id) => Array.isArray(q.skippedIds) && q.skippedIds.includes(id)
 
 /** The week's sessions already done, in slot order. `[]` without a queue. */
 export function queueDone(S) {
@@ -79,7 +81,7 @@ export function queueDone(S) {
 /** The sessions still to do, in slot order — the first is the next one. `[]` without a queue. */
 export function queueRemaining(S) {
   const q = queueOf(S)
-  return q ? q.ids.filter(id => !isDone(S, q, id)) : []
+  return q ? q.ids.filter(id => !isDone(S, q, id) && !skipped(q, id)) : []
 }
 
 /**
@@ -129,7 +131,7 @@ export function queueLiveOn(S, iso, today) {
 export function pinState(S, id) {
   const q = queueOf(S)
   if (!q || !id || !q.ids.includes(id)) return null
-  return isDone(S, q, id) ? 'done' : 'open'
+  return isDone(S, q, id) || skipped(q, id) ? 'done' : 'open'
 }
 
 /**
@@ -154,7 +156,7 @@ export function queueView(S, today) {
       const pin = id !== next && pins.find(p => p.id === id && p.iso !== on)
       return {
         id, name: nameOf(id),
-        state: !remaining.includes(id) ? 'done' : id === next ? 'next' : pin ? 'pinned' : 'later',
+        state: isDone(S, q, id) ? 'done' : skipped(q, id) ? 'skipped' : id === next ? 'next' : pin ? 'pinned' : 'later',
         ...(pin ? { on: pin.iso } : {}),
       }
     }),
@@ -189,7 +191,9 @@ export function weekTally(S, today) {
   // `q.ids`, but a weekday pointer to it is still not a day you planned yourself.
   const unqueued = id => !(q && S.queue.ids.includes(id))
   const ownIds = ids => [].concat(ids || []).filter(id => S.routines.some(r => r.id === id) && unqueued(id))
-  const ownDays = Object.values(S.week || {}).filter(ids => ownIds(ids).length).length
+  const cycleIndex = cycleWeekIndex(S.trainingCycle, today)
+  const schedule = cycleIndex == null ? S.week : (today < S.trainingCycle.anchor ? {} : S.trainingCycle.weeks[cycleIndex])
+  const ownDays = Object.values(schedule || {}).filter(ids => ownIds(ids).length).length
   if (!q) return { done: thisWeek.length, planned: ownDays }
   // The workout that earns each session its credit is the earliest one the DONE RULE accepts
   // (by date, not array position — a backfilled log is not always in order); every other

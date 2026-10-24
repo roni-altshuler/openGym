@@ -1,3 +1,4 @@
+import { cycleRoutineIds } from './training-cycle.js';
 // Floating coach week — the "what's next" rule for web-push reminders. Hand-copied (not
 // imported) from frontend/src/lib/queue.js / lib/history.js: the same rules on both sides, kept
 // as a tiny standalone module here (rather than inline in server.js) so it can be unit-tested
@@ -82,7 +83,7 @@ function queueOf(S) {
   const known = new Set((S.routines || []).map(r => r?.id));
   const ids = [...new Set(q.ids)].filter(id => known.has(id));
   if (!ids.length) return null;
-  return { ids, startsOn };
+  return { ids, startsOn, ...(Array.isArray(q.skippedIds) ? { skippedIds: q.skippedIds } : {}) };
 }
 // The reminder tick only ever asks "what's next right now" — there is no separate "today" to
 // preview a different date against, so `today` in the spec's `next(iso, today)` is just `iso`.
@@ -92,7 +93,8 @@ function queueNext(S, iso) {
   const q = queueOf(S);
   if (!q || iso < q.startsOn) return null;
   const done = doneIds(S, q);
-  const remaining = q.ids.filter(id => !done.has(id));
+  const skipped = new Set(Array.isArray(q.skippedIds) ? q.skippedIds : []);
+  const remaining = q.ids.filter(id => !done.has(id) && !skipped.has(id));
   const open = new Set(remaining);
   const pins = Object.entries(S.dayPlan || {}).filter(([d, id]) => d >= iso && open.has(id));
   const here = pins.find(([d]) => d === iso);
@@ -108,7 +110,7 @@ function queueNext(S, iso) {
 export function pinState(S, id) {
   const q = queueOf(S);
   if (!q || !id || !q.ids.includes(id)) return null;
-  return doneIds(S, q).has(id) ? 'done' : 'open';
+  return doneIds(S, q).has(id) || (Array.isArray(q.skippedIds) && q.skippedIds.includes(id)) ? 'done' : 'open';
 }
 
 // A weekday can hold a routine-id list (combine routines); the reminder only needs the first.
@@ -130,7 +132,7 @@ export function effectiveRoutineId(S, iso) {
   // The planner's weekday pointers stay hidden on a live queue day even when it has no session for
   // it (every remaining one pinned to another day): those sessions have their days.
   const live = queueLiveOn(S, iso);
-  const list = [].concat(S.week?.[wd] || []);
+  const list = cycleRoutineIds(S, iso) ?? [].concat(S.week?.[wd] || []);
   if (!list.length) return null;
   const known = new Set((S.routines || []).map(r => r?.id));
   const queued = live ? new Set(S.queue.ids) : null;
@@ -143,5 +145,6 @@ export function queueLiveOn(S, iso) {
   const q = queueOf(S);
   if (!q || iso < q.startsOn) return false;
   const done = doneIds(S, q);
-  return q.ids.some(id => !done.has(id));
+  const skipped = new Set(Array.isArray(q.skippedIds) ? q.skippedIds : []);
+  return q.ids.some(id => !done.has(id) && !skipped.has(id));
 }

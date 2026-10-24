@@ -1,5 +1,6 @@
 // Pure helpers over the state object S (ported 1:1 from the vanilla app).
 import { syncSupersetMeta } from './superset-meta.js'
+import { cycleRoutineIds } from '../../../api/training-cycle.js'
 import { todayISO, isoOf, weekKey, weekStartOf, fmtNum } from './format.js'
 import { fmtSpeed } from './speed.js'
 import { hasIncline, inclineFrom } from './incline.js'
@@ -480,7 +481,7 @@ export function effectiveRoutineIds(S, iso, today = todayISO()) {
   const pin = pinState(S, ov)
   if (!pin && ov && S.routines.some(r => r.id === ov)) return [ov]
   const wd = new Date(iso + 'T12:00:00').getDay()
-  const weekday = [].concat(S.week[wd] || []).filter(id => S.routines.some(r => r.id === id))
+  const weekday = (cycleRoutineIds(S, iso) ?? [].concat(S.week[wd] || [])).filter(id => S.routines.some(r => r.id === id))
   const q = pin === 'open' ? ov : queueNext(S, iso, today)
   // The planner's weekday pointers stay hidden on the queue's day even when it has no session for
   // it (every remaining one pinned to another day): those sessions have their days.

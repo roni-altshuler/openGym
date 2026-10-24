@@ -98,6 +98,8 @@ export const DEF = {
   // The in-app rotation's reusable definition — { id, sequence, label } (lib/rotation.js). Never
   // a live queue: it only ever feeds `queue`, and `queue.rotationId` says the pass is managed here.
   rotation: null,
+  trainingCycle: null, // Optional calendar-based two-week strength schedule; stamped by normal sync.
+  strengthProfile: null, // Personal goals and preferred days; scheduling uses the native rotation.
   // null | 'week' | 'rotation' — which of the two scheduling screens Home/Plan show. A live
   // queue always wins regardless of this (scheduleModeOf, lib/rotation.js): the flag exists only
   // to keep Rotation selected, and the weekday grid hidden, from the moment it's chosen in
@@ -1795,6 +1797,7 @@ export const useStore = create((set, get) => {
        Otherwise { owed: false } or { owed: true, count, stashed: true }, signed out. A workout
        running here is kept aside either way (stashActive), and the rest and hold timers stop. */
     async signOut({ force = false } = {}) {
+      const hostedIdentity = get().config?.hosted_identity
       await settle()
       const left = get().unsyncedChanges()
       if (left.owed && !force) return owedResult(left)
@@ -1805,6 +1808,7 @@ export const useStore = create((set, get) => {
       // behind, still valid, so the logout is owed until the server answers it (see boot).
       try { await api('/api/logout', { method: 'POST', body: '{}' }) } catch (e) { if (!MOBILE) logoutOwed(true) }
       await clearLocalSession()
+        if (hostedIdentity) window.location.assign('/signout-with-chatgpt?return_to=%2F')
       return left.owed ? owedResult(left, { stashed: true }) : { owed: false }
     },
 

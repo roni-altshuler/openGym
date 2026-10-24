@@ -182,6 +182,8 @@ export function loadStarterPlan(planId, profile) {
   const plan = buildStarterPlan(planId, profile ? profileEquipment(profile) : undefined)
   if (!plan) return false
   update(st => {
+    // An explicitly loaded fixed-week starter replaces the active calendar cycle.
+    st.trainingCycle = null
     // Loading the same plan again reuses the routines it added last time (same name, same
     // exercises) for the weekdays instead of a second Upper A, Lower A, ... under the same names.
     // A plan fitted to different equipment has other exercises, so it is added alongside.
