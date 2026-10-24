@@ -48,6 +48,17 @@ The owner-private app is at https://roni-strength.wiggly-shore-5967.chatgpt.site
 the owning ChatGPT account. Add it to the phone home screen from Safari/Chrome's browser menu.
 No Garmin key is required; Garmin setup is deferred and hidden from the default Plan screen.
 
+### Offline gym use
+
+Open the installed home-screen app while online first and let the plan load. Its service worker
+caches the app code; logging stores changes on the phone immediately. Cached demonstrations
+remain available offline; a demonstration that has not been downloaded still needs a connection.
+
+Pending changes sync automatically when the app is open and connectivity returns. If you closed
+it, reopen it while online. Check the connection indicator and wait for the synced confirmation.
+A phone/browser that suspends or closes the app is not guaranteed to sync in the background.
+Stay signed in, use normal browser storage, and keep local app data until pending workouts sync.
+
 The hosted edition uses the original frontend with a small private persistence adapter.
 Workouts, routines, settings, body weight and measurements sync to D1 with atomic revision
 checks, while browser offline storage and exports remain available. Access stays owner-only.

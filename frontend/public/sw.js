@@ -46,7 +46,9 @@ const lazyAssets = () => { try { const a = JSON.parse(LAZY); return Array.isArra
 // manifest that would go stale the first time a chunk is renamed.
 async function precache() {
   const c = await caches.open(CACHE)
-  const res = await fetch('index.html', { cache: 'no-cache' })
+  // Directory-index hosts redirect index.html to ./; ask for the canonical app directory
+  // directly so a valid shell is not rejected as an authentication redirect.
+  const res = await fetch('./', { cache: 'no-cache' })
   // Whatever came back is not the shell: the server was restarting mid-deploy (5xx), or the
   // request was answered by something else after a redirect — an auth proxy in front (Authelia,
   // Cloudflare Access; docs/SELF_HOSTING.md) sends its login page once the session there expires.

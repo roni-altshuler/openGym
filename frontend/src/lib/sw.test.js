@@ -59,6 +59,21 @@ const shellHtml = '<html><head><script src="./assets/index-new.js"></script></he
 beforeEach(() => { delete globalThis.self })
 
 describe('sw.js install and activate', () => {
+  it('installs on directory-index hosts and serves the cached app after the network disappears', async () => {
+    await loadSW()
+    const asked = []
+    globalThis.fetch = async u => {
+      asked.push(String(u))
+      if (String(u) === 'index.html') return { ok: true, status: 200, redirected: true, text: async () => shellHtml }
+      return { ok: true, status: 200, redirected: false, text: async () => String(u) === './' ? shellHtml : '' }
+    }
+    await fire('install')
+    expect(skipWaiting).toBe(1)
+    expect(asked).not.toContain('index.html')
+    globalThis.fetch = async () => { throw new TypeError('offline') }
+    const event = await fire('fetch', { request: { url: 'https://gym.test/gym/', method: 'GET', mode: 'navigate' } })
+    expect(await (await event._res).text()).toBe(shellHtml)
+  })
   it('a precache that cannot reach the server fails the install and keeps the build on the device', async () => {
     await loadSW()
     const old = await previousBuild()
@@ -95,7 +110,7 @@ describe('sw.js install and activate', () => {
   it('a chunk that will not cache fails the install, so the build on the device stays', async () => {
     await loadSW()
     const old = await previousBuild()
-    globalThis.fetch = async u => (String(u) === 'index.html'
+    globalThis.fetch = async u => (String(u) === './'
       ? { ok: true, status: 200, redirected: false, text: async () => shellHtml }
       : { ok: false, status: 404 })
 
@@ -114,7 +129,7 @@ describe('sw.js install and activate', () => {
     // would have stored that HTML under the main bundle's URL.
     await loadSW()
     const old = await previousBuild()
-    globalThis.fetch = async u => (String(u) === 'index.html'
+    globalThis.fetch = async u => (String(u) === './'
       ? { ok: true, status: 200, redirected: false, text: async () => shellHtml }
       : { ok: true, status: 200, redirected: true, text: async () => '<html>sign in</html>' })
 
@@ -132,7 +147,7 @@ describe('sw.js install and activate', () => {
     await previousBuild()
     const withIcon = '<html><head><script src="./assets/index-new.js"></script>'
       + '<link rel="stylesheet" href="./assets/index-new.css"><link rel="icon" href="./icon-512.png"></head></html>'
-    globalThis.fetch = async u => (String(u) === 'index.html'
+    globalThis.fetch = async u => (String(u) === './'
       ? { ok: true, status: 200, redirected: false, text: async () => withIcon }
       : String(u).endsWith('.png') ? { ok: false, status: 404 } : { ok: true, status: 200, clone: () => ({}) })
 
@@ -148,7 +163,7 @@ describe('sw.js install and activate', () => {
   it('an install that got the shell takes over and drops the previous build', async () => {
     await loadSW()
     await previousBuild()
-    globalThis.fetch = async u => (String(u) === 'index.html'
+    globalThis.fetch = async u => (String(u) === './'
       ? { ok: true, status: 200, redirected: false, text: async () => shellHtml }
       : { ok: true, status: 200, clone: () => ({}) })
 
@@ -212,7 +227,7 @@ describe('sw.js re-registers a rotated push subscription with the page\'s device
     await loadSW()
     await previousBuild()
     await (await globalThis.caches.open(DEVICE_CACHE)).put(DEVICE_URL, new Response('dev1234abcd'))
-    globalThis.fetch = async u => (String(u) === 'index.html'
+    globalThis.fetch = async u => (String(u) === './'
       ? { ok: true, status: 200, redirected: false, text: async () => shellHtml }
       : { ok: true, status: 200, clone: () => ({}) })
     await fire('install')

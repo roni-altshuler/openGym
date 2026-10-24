@@ -7,6 +7,10 @@ exports remain in the original frontend. The personal preset uses the native ong
 with five distinct sessions and optional accessories. There are no dates in the default seed.
 Existing copies of the earlier dated draft migrate in the frontend without deleting history.
 
+The service worker precaches the canonical app directory (`./`), not `index.html`: this host
+redirects the latter, which the worker correctly rejects as a potentially wrong/auth page.
+The cache key remains `index.html` for offline navigation fallback. API responses are never cached.
+
 This adapter is deliberately smaller than openGym's official Docker/Node backend. Native
 pairing, personal media uploads/sync, server push, server AI Coach and the filesystem MCP
 connection are not implemented here. They remain available in the full original backend in
