@@ -1,3 +1,4 @@
+import { cycleRoutineIds } from './training-cycle.js';
 // Floating coach week — the "what's next" rule for web-push reminders. Hand-copied (not
 // imported) from frontend/src/lib/queue.js / lib/history.js: the same rules on both sides, kept
 // as a tiny standalone module here (rather than inline in server.js) so it can be unit-tested
@@ -130,7 +131,7 @@ export function effectiveRoutineId(S, iso) {
   // The planner's weekday pointers stay hidden on a live queue day even when it has no session for
   // it (every remaining one pinned to another day): those sessions have their days.
   const live = queueLiveOn(S, iso);
-  const list = [].concat(S.week?.[wd] || []);
+  const list = cycleRoutineIds(S, iso) ?? [].concat(S.week?.[wd] || []);
   if (!list.length) return null;
   const known = new Set((S.routines || []).map(r => r?.id));
   const queued = live ? new Set(S.queue.ids) : null;

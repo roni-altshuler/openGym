@@ -3,7 +3,7 @@
 // to identical entries, or the two paths drift apart the first time a prescription rule changes.
 // Imports both history.js and progression.js (which itself imports history.js); nothing in
 // either imports this file, so there is no cycle.
-import { buildSets, applyIntensifierPlan, modeOf, barFloor } from './history.js'
+import { buildSets, applyIntensifierPlan, modeOf, barFloor, entryRoutineId } from './history.js'
 import { isWarmupRow } from './workout-model.js'
 import { nextPrescription, applyPrescription, defaultIncrement, weightIncrement, plannedOf } from './progression.js'
 import { dropGrid } from './plates.js'
@@ -29,6 +29,13 @@ export const startsFromLast = st => st?.startFrom === 'last'
  * `noProg` builds the routine's own numbers with no prescription, as an excluded routine does.
  */
 export function buildPlannedEntry(stored, cfg, routine, { noProg = false } = {}) {
+  // Return-to-training plans explicitly establish a new baseline. Old records remain history,
+  // but neither cross-routine history nor the global weight cache chooses the first load.
+  if (cfg.freshBaseline === true && routine?.id && !(stored.workouts || []).some(w =>
+    (w.entries || []).some(e => e.id === cfg.id && entryRoutineId(w, e) === routine.id &&
+      (e.sets || []).some(s => s.done && !isWarmupRow(s))))) {
+    stored = { ...stored, workouts: [], exWeights: {} }
+  }
   // What a dumbbell weight means for this exercise today (lib/dumbbells.js): the history it
   // progresses from is read in that meaning, so a switch from "40 total" to per bell opens at
   // 20, not at 40 a hand. Only a switch between the two explicit meanings converts anything.

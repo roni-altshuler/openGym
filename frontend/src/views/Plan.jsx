@@ -11,6 +11,8 @@ import {
 import Icon from '../components/Icon.jsx'
 import { Button, Row, Section, Segmented } from '../components/ui.jsx'
 import SwipeRow from '../components/SwipeRow.jsx'
+import StrengthProgram from '../components/StrengthProgram.jsx'
+import GarminActivities from '../components/GarminActivities.jsx'
 import { copyRoutine, deleteRoutine, restoreRoutine, routineSnapshot } from '../lib/routines.js'
 import { workoutControls } from '../lib/workout-controls.js'
 import { tappable } from '../lib/use-sheet-keyboard.js'
@@ -162,18 +164,21 @@ export default function Plan() {
 
   return <div className="narrow plan">
     <div className="hdr">
-      <div><h1>{t('Plan')}</h1><div className="sub">{mode === 'rotation' ? t('Your routines in a loop') : t('Your weekly routine')}</div></div>
+      <div><h1>{t('Plan')}</h1><div className="sub">{S.trainingCycle ? 'Your two-week strength program' : mode === 'rotation' ? t('Your routines in a loop') : t('Your weekly routine')}</div></div>
       <div className="hdr-actions">
         {showCoach && <Button size="sm" variant="tinted" icon="sparkles" onClick={() => nav('/coach')}>{t('Coach')}</Button>}
         <button className="iconbtn" onClick={openMenu} aria-label={t('Plan options')} title={t('Plan options')}><Icon name="share" /></button>
       </div>
     </div>
     <input ref={fileRef} type="file" accept="application/json,.json" onChange={pickFile} hidden />
+    {!DEMO && <StrengthProgram />}
     <Segmented className="plan-views" value={view} onChange={setView}
       options={[{ value: 'schedule', label: t('Schedule') }, { value: 'routines', label: t('Routines') }]} />
     {view === 'routines'
       ? <Routines S={S} update={update} nav={nav} />
-      : <Schedule S={S} update={update} nav={nav} mode={mode} />}
+      : S.trainingCycle ? <p className="small dim">Your two-week calendar is shown above. Open Routines to edit individual exercises and their targets.</p> : <Schedule S={S} update={update} nav={nav} mode={mode} />}
+    {!DEMO && user && <GarminActivities key={user.id} />}
+    {!DEMO && <p className="small dim"><a href="https://github.com/roni-altshuler/openGym/tree/personalize/strength-cycle" target="_blank" rel="noreferrer">Source for this version · AGPL</a></p>}
   </div>
 }
 

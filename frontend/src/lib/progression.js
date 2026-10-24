@@ -541,6 +541,14 @@ export function nextPrescription(S, cfg, routine) {
   // load to enter logged without one (climbsReps): a dip done with a belt has a load to progress
   // and belongs on the normal policies.
   if (w <= 0 && climbsReps(cfg)) {
+    // Opt-in belt progression: clean reps through the range, then added kg, without adding sets.
+    // Other bodyweight plans retain their existing reps/sets policy.
+    if (cfg.weightedAfterTop === true && isBw(cfg) && policy === 'double') {
+      const range = normalizeRepRange(cfg.reps, cfg.repsMin, repStep(cfg))
+      if (last.ok && last.low >= range.reps) return { policy, kind: 'up', weight: inc, reps: range.repsMin, why: ['Every set reached the top of the range. Add {0} {1} on the belt and return to the bottom of the range.', inc, unit] }
+      const reps = Math.min(range.reps, Math.max(range.repsMin, last.low + (last.ok ? repStep(cfg) : 0)))
+      return { policy, kind: 'hold', weight: 0, reps, why: ['Build clean bodyweight reps across every set before adding belt weight.'] }
+    }
     const goal = last.goal || cfg.reps || 0
     // The set count this has reached: the plan's, or more once the ceiling below added sets.
     // Read off the last session's target, or the added set lasted one session and the next

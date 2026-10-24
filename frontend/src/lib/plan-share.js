@@ -9,6 +9,7 @@
 //     a page break — each exercise, and each routine that fits, stays in one place.
 
 import { EXIDX, canonicalExId, isBodyweightEq, isCustomEx } from './exercises.js'
+import { portableCycle } from '../../../api/training-cycle.js'
 import { cleanBackups } from './routine-backups.js'
 import { cleanUrl } from './media-refs.js'
 import { modeOf, exLine, MAX_PLANNED_WARMUPS } from './history.js'
@@ -101,6 +102,8 @@ function cleanEx(e) {
   // Progression settings travel with the plan — a shared Greyskull routine that arrives
   // without its rule is just a list of weights.
   if (e.prog) o.prog = e.prog
+  if (e.weightedAfterTop === true) o.weightedAfterTop = true
+  if (e.freshBaseline === true) o.freshBaseline = true
   if (e.inc > 0) o.inc = e.inc
   // Back-off sets step down by that same step; written only when on (lib/backoff.js).
   if (isBackoff(e)) o.backoff = true
@@ -229,7 +232,8 @@ export function buildPlanBundle(S, name) {
   // written after are read the same way at the other end.
   const week = {}
   WEEK_DAYS.forEach(d => { if (S.week?.[d]?.length) week[d] = [].concat(S.week[d]) })
-  return { opengym_plan: PLAN_FMT, exported: todayISO(), name: name || '', unit, week, routines, customEx }
+  const trainingCycle = portableCycle(S.trainingCycle, id => routines.some(r => r.id === id) ? id : null)
+  return { opengym_plan: PLAN_FMT, exported: todayISO(), name: name || '', unit, week, routines, customEx, ...(trainingCycle ? { trainingCycle } : {}) }
 }
 
 /**
@@ -282,7 +286,9 @@ export function parsePlan(raw, destinationUnit = 'kg') {
       return convertedExercise({ ...passthrough, ...(pyramid.length ? { pyramid } : {}), ...(pyramidRest.length ? { pyramidRest } : {}), ...(pyramidWeight.length ? { pyramidWeight } : {}), ...(warm ? { warmupSets: warm } : {}), ...(intens ? { intensifier: intens } : {}), ...(rest ? { restSec: rest } : {}), ...(warmOff ? { warmupRestOff: true } : warmRest ? { warmupRestSec: warmRest } : {}), ...(sideRest ? { sideRestSec: sideRest } : {}), ...(subs.length ? { subs } : {}), ...(sgName ? { sgName } : {}), ...(sgRest ? { sgRest } : {}) }, sourceUnit || destination, destination)
     })
   }))
+  const trainingCycle = portableCycle(data.trainingCycle, id => routines.some(r => r.id === id) ? id : null)
   return {
+    ...(trainingCycle ? { trainingCycle } : {}),
     name: (data.name || '').trim(),
     routines,
     week: data.week || {},
@@ -290,7 +296,7 @@ export function parsePlan(raw, destinationUnit = 'kg') {
     dropped,
     routineCount: routines.length,
     exerciseCount: routines.reduce((n, r) => n + r.ex.length, 0),
-    scheduledDays: WEEK_DAYS.filter(d => data.week?.[d]?.length).length,
+    scheduledDays: trainingCycle ? Object.keys(trainingCycle.weeks[0]).length : WEEK_DAYS.filter(d => data.week?.[d]?.length).length,
     // `unit` is the unit of the returned prescriptions. `sourceUnit` is null for a legacy file;
     // that absence means its numbers were intentionally treated as already in `destination`.
     unit: destination,
@@ -336,6 +342,8 @@ export function mergePlan(s, bundle, { schedule } = {}) {
     })
   })
   if (schedule) {
+    s.trainingCycle = portableCycle(source.trainingCycle, id => ridMap[id])
+    if (s.trainingCycle) { s.weekStart = 0; s.queue = null; s.scheduleMode = 'week' }
     WEEK_DAYS.forEach(d => { delete s.week[d] })
     Object.entries(source.week || {}).forEach(([d, val]) => {
       // `[].concat` tolerates a pre-upgrade scalar bundle value. An element whose routine id
@@ -440,8 +448,11 @@ export function planPrintHTML(S, owner, { routineId } = {}) {
     : `<p class="none">${esc(t('No routines yet.'))}</p>`
   const title = single ? single.name : t('Weekly Training Plan')
   const sub = [single ? exCount(single.ex.length) : null, owner, todayISO()].filter(Boolean).map(esc).join(' · ')
-  const week = routineId ? '' : `<h3 class="block">${esc(t('Week schedule'))}</h3>
-  ${weekHTML(S)}
+  const cycle = portableCycle(S.trainingCycle)
+  const scheduleHTML = cycle
+    ? cycle.weeks.map((week, i) => `<h3 class="block">Week ${i === 0 ? 'A' : 'B'}</h3>${weekHTML({ ...S, week, weekStart: 0 })}`).join('')
+    : `<h3 class="block">${esc(t('Week schedule'))}</h3>${weekHTML(S)}`
+  const week = routineId ? '' : `${scheduleHTML}
   <h3 class="block">${esc(t('Routines'))}</h3>`
   return `<!doctype html><html lang="${getLang()}" dir="${RTL_LANGS.has(getLang()) ? 'rtl' : 'ltr'}"><head><meta charset="utf-8">
 <title>${esc(title)}</title>
