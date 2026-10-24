@@ -99,6 +99,7 @@ export const DEF = {
   // a live queue: it only ever feeds `queue`, and `queue.rotationId` says the pass is managed here.
   rotation: null,
   trainingCycle: null, // Optional calendar-based two-week strength schedule; stamped by normal sync.
+  strengthProfile: null, // Personal goals and preferred days; scheduling uses the native rotation.
   // null | 'week' | 'rotation' — which of the two scheduling screens Home/Plan show. A live
   // queue always wins regardless of this (scheduleModeOf, lib/rotation.js): the flag exists only
   // to keep Rotation selected, and the weekday grid hidden, from the moment it's chosen in

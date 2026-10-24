@@ -1,46 +1,74 @@
 # Personal strength edition
 
-This non-commercial fork adds an editable two-week strength/hypertrophy draft to openGym.
-Open **Plan**, review both weeks and the exercise prescriptions, choose the Sunday anchor,
-and select **Use this two-week plan**. It defaults to kg. No completed workouts, weigh-ins,
-personal benchmarks, credentials or starting working loads are included in the source.
+This non-commercial fork keeps openGym's logging, library, demonstrations, progression,
+statistics and exports. The personal preset focuses on building muscle and strength over
+months and years. It has no prescribed start date, week number or end date.
 
-| Day | Week A | Week B |
-| --- | --- | --- |
-| Sunday | Upper A | Upper B |
-| Monday | Lower — quad emphasis | Lower — quad emphasis |
-| Tuesday | Upper B | Upper A |
-| Wednesday | Lower — posterior emphasis | Lower — posterior emphasis |
-| Thursday | Upper A | Upper B |
-| Friday | Optional accessories, swimming or rest | Optional accessories, swimming or rest |
-| Saturday | Optional accessories, swimming or rest | Optional accessories, swimming or rest |
+## Your ongoing rotation
 
-The cycle repeats by calendar date, including across daylight-saving and year boundaries.
-Per-date rescheduling and rest overrides still win. Stopping the cycle keeps its routines and
-history and restores the previous fixed-week assignments. Optional accessories can be started
-from either weekend row; they never advance the calendar cycle.
+1. Upper A — flat bench, pull-ups, seated cable row, wide-grip pulldown and arms.
+2. Lower · quad emphasis — squat, Bulgarian split squat, leg extension, curl and calves.
+3. Upper B — incline press, dips, close-neutral pulldown, T-bar row, shoulders and arms.
+4. Lower · posterior emphasis — deadlift, RDL, hamstring curl, hip thrust and calves.
+5. Upper C · volume — chest press, underhand pulldown, pec deck, cable row and arms.
+
+These are five distinct sessions, not assigned dates. Aim for Sunday–Thursday, but train on
+any day. openGym's existing Rotation keeps the first unfinished session up next and starts
+another round when the current one finishes. Missing days does not reset the program.
+
+Use **Plan → Schedule → Edit** to reorder/remove sessions and **Add** to include a routine.
+Use **Skip next session once** to skip just this round, with Undo: it never writes a workout
+or removes the routine from future rounds. On Home/Start, choose any other routine to repeat
+it or train out of order. Friday/Saturday accessories are optional and do not advance the
+main rotation. There is no swimming in the preset.
+
+The earlier dated draft upgrades once when the app opens. Existing routine ids, logged sets,
+measurements, photos, user edits and history remain saved. An active workout is left alone
+until it is finished or discarded. New profiles activate the rotation when actually opened;
+no future date is written into the shipped seed.
 
 ## Training behavior
 
-- Each exercise has working sets, a rep range and its own rest timer. Compounds generally use
-  120–180 seconds; isolation work uses 60–90 seconds. These are editable.
-- Double progression uses completed sets: reach the top of the range in every set before the
-  suggested load rises. Record actual completed reps rather than leaving an inaccurate target.
-- Pull-ups and dips begin at bodyweight. The kg column is **added belt weight**. The draft opts
-  into progressing to a small belt load after every prescribed set reaches the range ceiling.
-- The draft starts a fresh baseline for each routine/exercise. Old history remains available,
-  but old loads and global records cannot prefill the first session. Actual sessions of the new
-  routine become its progression baseline.
-- Upper A includes an overhand pulldown. Upper B includes a neutral-grip pulldown; close- and
-  reverse-grip variations are saved as planned substitutes. Cable and machine work are included.
-- The draft contains no leg press, face pulls or overhead triceps extensions.
-- Use the normal **History** and **Stats** tabs for logs and progression. The existing mobile
-  workout screen, timers, offline storage, backup/export and passkey sync are retained.
+- kg by default, with working sets, repetition ranges and exercise-specific rest times.
+- Double progression: reach the top of the range in every prescribed set before adding load.
+- Pull-ups and dips start at bodyweight; log **added belt kg**. Clean top-range sets unlock
+  the next small belt load. Partial or incomplete sets never count as success.
+- Starting working weights are blank. Old benchmarks remain history; actual completed sessions
+  of the new routine establish its progression baseline.
+- RIR logging is selected for the personal preset; RPE remains available in Settings.
+- Use controlled movement and challenging weights, leave quality reps in reserve, and allow
+  recovery. The prescriptions are editable. No leg press, face pulls or overhead triceps work.
+- openGym's existing Stats provide PRs, estimated 1RM trends, volume, effort, muscle balance,
+  recovery, body weight and measurements. Plans can be shared/printed with the rotation order;
+  plan sharing excludes workout history. Full backups preserve the complete profile.
 
-## Run this fork
+## Phone deployment and supported features
 
-The customization must be built from this repository. Pulling upstream's prebuilt image alone
-does not include it.
+The owner-private app is at https://roni-strength.wiggly-shore-5967.chatgpt.site . Sign in with
+the owning ChatGPT account. Add it to the phone home screen from Safari/Chrome's browser menu.
+No Garmin key is required; Garmin setup is deferred and hidden from the default Plan screen.
+
+The hosted edition uses the original frontend with a small private persistence adapter.
+Workouts, routines, settings, body weight and measurements sync to D1 with atomic revision
+checks, while browser offline storage and exports remain available. Access stays owner-only.
+
+| Capability | Private hosted edition | Official Docker setup |
+| --- | --- | --- |
+| Logging, rotation, RIR/RPE, PRs, charts, volume/recovery | Available | Available |
+| Library and exercise demonstrations | Available, unmodified licensed media | Available |
+| Workout-state/device synchronization and exports | ChatGPT sign-in + D1 | openGym accounts/passkeys + persistent data directory |
+| Private progress-photo/video and custom-media synchronization | Not available on this adapter | Available |
+| Native app pairing and server push | Not available on this adapter | Available |
+| Server AI Coach and read-only MCP | Preserved in source; not connected to this adapter | Optional, see below |
+
+Do not assume a hosted feature exists merely because its full-server counterpart is in the
+repository. For all upstream server features over the long term, use its documented Docker
+setup on a persistent host. The original backend is preserved; no personal history belongs
+in the public repository. Export backups regularly from Settings and back up hosted storage.
+
+## Run the full original backend
+
+Build the customization from this fork; upstream's prebuilt image does not include it.
 
 ```sh
 git clone https://github.com/roni-altshuler/openGym.git
@@ -50,93 +78,31 @@ cp .env.example .env
 docker compose up -d --build
 ```
 
-Open `http://localhost:8080`. Guest mode stores data in that browser. Create a private profile
-for cross-device sync. For phone access, follow [self-hosting](SELF_HOSTING.md) and
-[HTTPS on a LAN](SELF_HOSTING_HTTPS.md); configure `RP_ID` and `ORIGIN` for the actual HTTPS
-hostname. Keep `data/` private and backed up. Do not mount it as a public static directory.
-An ordinary static host or a serverless deployment without persistent storage is insufficient
-for the unmodified Node/file-storage backend.
+Open http://localhost:8080. Follow [self-hosting](SELF_HOSTING.md) for an HTTPS hostname,
+`RP_ID` and `ORIGIN`. Keep `data/` private, persistent and backed up. The official web/API
+containers, passkey authentication, native pairing, uploads and optional services remain.
 
-For development, use Node 22 and the committed npm lockfiles:
+## Optional Coach and MCP
 
-```sh
-cd frontend
-npm ci
-npm test
-npm run build
-```
+The original [AI Coach](AI_COACH.md) stays off until explicitly configured. No paid provider,
+API key or spending is enabled by this fork. Set up a provider or your own compatible local
+model from the original admin dashboard, review its consent screen, and select muscle gain
+and strength as the goals. Its normal proposal/review flow requires you to apply changes;
+suggestions do not silently replace your routines. Use lifting history, effort, volume and
+recovery as inputs rather than old benchmark weights as prescriptions.
 
-The frontend development server proxies `/api` to the local API on port 3000. Backend work
-needs its own `npm ci --omit=optional` inside `api/`; run it with a writable private `DATA_DIR`.
-The local preview can also be inspected in guest mode without a running API.
+The [read-only MCP server](../mcp/README.md) is retained unmodified. It reads a private local
+`data/` directory and uses the same training helpers as the app for performance analysis.
+Its tools cannot edit routines, write workouts or access account credentials. Do not expose
+that directory or the stdio server publicly. This connection is optional and does not activate
+an AI provider. The private hosted database is not automatically exposed through MCP.
 
-## Optional Garmin Personal API
+## Development and licensing
 
-### Private hosted app on your phone
+Use Node 22 and the committed lockfiles. Run frontend tests/build from `frontend/`, the API
+queue tests from the repository, and `node mcp/scripts/check-node-loadable.mjs` to ensure the
+shared logic still loads in the original MCP server. `hosting/sites/` contains the optional
+hosting adapter; `generate-seed.mjs` produces only generic prescriptions with no personal data.
 
-The private hosted edition is at https://roni-strength.wiggly-shore-5967.chatgpt.site .
-Sign in with the same ChatGPT account that owns the Site. The prepared plan starts with
-Week A on Sunday, 25 October 2026. You can edit the routines and calendar in Plan.
-
-For Garmin, open **Plan → Garmin → Check connection setup**, paste your existing Personal
-API key into the private password field and select **Connect Garmin securely**. The form
-clears the value immediately; the server verifies it directly with Garmin, encrypts it using
-AES-256-GCM and stores the ciphertext separately from workout data. Never send the key in chat.
-After connection, select **Read recent activities**. **Disconnect Garmin** removes the saved key.
-
-Hosted workouts sync through a private D1 database with revision checks. The key is excluded
-from workout backups. Hosting uses ChatGPT sign-in instead of openGym passkeys; native pairing,
-custom-media uploads, the AI coach and server push notifications are disabled in this edition.
-The original Docker edition below retains its own server capabilities and configuration.
-
-### Docker/server configuration
-
-The official [Personal API overview](https://developer.garmin.com/gc-developer-program/overview/),
-[FAQ](https://developer.garmin.com/gc-developer-program/personal/personal-faq/) and
-[Swagger](https://developer.garmin.com/gc-developer-program/personal/swagger-docs/) were checked
-on 24 October 2026. Personal access is pull-only. The documented activity listing is supported;
-workout upload to Garmin or a watch is not implemented. Garmin lists Training API access under
-its Business program.
-
-1. Create your Personal API key yourself in Garmin Connect. Keep it private; do not paste it
-   into chat, a repository, a browser build setting, or a shared screenshot.
-2. Find your openGym **Account ID** in Settings → Account.
-3. Set `GARMIN_PERSONAL_API_KEY` and `GARMIN_USER_ID` in the private server's `.env` or secret
-   settings. `GARMIN_USER_ID` is your openGym Account ID, not a Garmin username. Restart the API.
-4. Sign into that profile, open **Plan → Garmin**, check setup, then **Read recent activities**.
-
-The server exchanges the key for a short-lived OAuth access token, caches that token only in
-memory, and reads up to 20 recent activity summaries on request. Access is restricted to the
-configured profile. The browser receives name, local date, type and duration; GPS, social,
-owner and health fields are omitted. No Garmin data is written to workout history or used to
-choose weights. Errors are sanitized, redirects are refused, and pulls are rate-limited.
-
-The integration is covered by mocked HTTP and authorization tests. It still needs a live
-verification with the owner's key on the intended private server. An unset key disables it.
-
-## Upstream audit and license
-
-Based on upstream commit `7a3ace53c5e910c2185f22df803726c5838a99ae`.
-At inspection the frontend package version is 1.4.2. The stack is React 19, Vite,
-React Router and Zustand; the API uses Node's HTTP server, passkeys and JSON-file persistence.
-nginx serves the frontend and proxies the API at the same origin. Capacitor supplies native
-Android/iOS packaging.
-
-Upstream GitHub Actions runs frontend, API and MCP checks and Docker smoke tests using Node 22.
-Its release workflows publish container images, mirror to GitLab and package mobile releases.
-This fork's customization is proposed through a PR in the owner's fork, not upstream.
-
-### Verification on this checkout
-
-The production frontend build, nine focused frontend suites (352 tests), API queue and Garmin
-tests (28 tests), locale consistency and source-string checks pass on Windows/Node 24.
-The mobile browser flow was checked at 390px: activation, both calendar weeks and exercise
-prescriptions render without horizontal overflow. The broader local suite is not green:
-three swipe-animation failures reproduce in unchanged upstream code with the same dependencies,
-and some container checks require a POSIX shell. Docker image execution and live Garmin access
-still need verification on the deployment host. Upstream CI targets Linux/Node 22.
-
-Keep [LICENSE](../LICENSE) and [NOTICE.md](../NOTICE.md). openGym code is AGPL-3.0-or-later;
-offer the corresponding modified source to users of a network deployment. Exercise media have
-separate Gym visual terms: a non-commercial openGym fork may retain the unmodified 180px media
-and notice. They are not covered by the code license. Do not repurpose them outside openGym.
+openGym code remains AGPL-3.0-or-later. Preserve LICENSE and the separate exercise-media NOTICE;
+this non-commercial fork distributes the media unchanged. Its source link remains in the app.

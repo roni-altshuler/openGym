@@ -15,7 +15,7 @@ import Icon from './Icon.jsx'
 export default function QueueRow({ S, today, onStart, managed }) {
   const v = queueView(S, today)
   if (!v) return null
-  const word = { done: t('Done'), next: t('Up next'), later: t('Later') }
+  const word = { done: t('Done'), next: t('Up next'), later: t('Later'), skipped: 'Skipped this round' }
   const next = v.items.find(i => i.state === 'next')
   // With every remaining session pinned to its own day nothing floats, so there is no 'next'
   // chip at all; the status line then names the soonest pinned one with its day.
@@ -36,7 +36,7 @@ export default function QueueRow({ S, today, onStart, managed }) {
           the word itself, which older saves kept in the language the loop was made in. */}
       <div className="small muted" style={{ fontWeight: 500 }}>{managed ? t('Rotation') : v.label}</div>
       {/* Your own loop speaks in rounds, as Plan does; a coach's week keeps its plain count. */}
-      <div className="small muted">{managed ? t('{0} of {1} done this round.', v.items.length - v.remaining.length, v.items.length) : `${v.items.length - v.remaining.length} / ${v.items.length}`}</div>
+      <div className="small muted">{managed ? t('{0} of {1} done this round.', v.items.filter(i => i.state === 'done').length, v.items.length) : `${v.items.filter(i => i.state === 'done').length} / ${v.items.length}`}</div>
     </div>
     {/* The state word keeps its sentence case ("Up next", as on Plan): .chip capitalizes every
         word for the routine names, which made it "Up Next" here (QA 10-06). A pinned chip's date

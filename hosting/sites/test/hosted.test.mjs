@@ -98,7 +98,10 @@ test('phone and desktop saves use atomic revision checks and keep profiles separ
   const env = environment()
   const initial = await (await hostedApi(req('/gym/api/data'), env)).json()
   assert.equal(initial.rev, 0)
-  assert.equal(initial.state.trainingCycle.weeks.length, 2)
+  assert.equal(initial.state.rotation.sequence.length, 5)
+  assert.equal(initial.state.queue, null)
+  assert.equal(initial.state.trainingCycle, undefined)
+  assert.equal(initial.state.strengthProfile.pendingStart, true)
   const first = structuredClone(initial.state), second = structuredClone(initial.state)
   first.workouts = [{ id: 'phone-fixture', entries: [], d: '2026-10-25' }]
   second.workouts = [{ id: 'desktop-fixture', entries: [], d: '2026-10-25' }]
@@ -110,4 +113,19 @@ test('phone and desktop saves use atomic revision checks and keep profiles separ
   const other = await (await hostedApi(req('/api/data', { user: 'bob' }), env)).json()
   assert.deepEqual(other.state.workouts, [])
   assert.equal((await hostedApi(req('/api/data', { method: 'PUT', body: { baseRev: 1, state: [] } }), env)).status, 400)
+})
+
+test('large histories stay ordinary JSON to the app while stored below the database row limit', async () => {
+  const env = environment()
+  const initial = await (await hostedApi(req('/api/data'), env)).json()
+  const state = initial.state
+  state.workouts = Array.from({ length: 2500 }, (_, n) => ({ id: 'synthetic-' + n,
+    d: '2029-01-01', entries: [], note: 'Controlled repetitions and recovery. '.repeat(30) }))
+  const saved = await hostedApi(req('/api/data', { method: 'PUT', body: { state, baseRev: 0, stamped: true } }), env)
+  assert.equal(saved.status, 200)
+  assert.ok(env.DB.profiles.get('alice').state.startsWith('opengym-gzip-v1:'))
+  assert.ok(Buffer.byteLength(env.DB.profiles.get('alice').state) < 1_900_000)
+  const read = await (await hostedApi(req('/api/data'), env)).json()
+  assert.deepEqual(read.state.workouts, state.workouts)
+  assert.equal(read.rev, 1)
 })

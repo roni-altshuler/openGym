@@ -1,14 +1,18 @@
 {
   "unit": "kg",
   "weekStart": 0,
-  "scheduleMode": "week",
+  "scheduleMode": "rotation",
   "week": {},
   "dayPlan": {},
   "workouts": [],
   "bodyweight": [],
+  "measurements": [],
+  "dayPhotos": {},
   "exWeights": {},
   "customEx": [],
   "active": null,
+  "effort": "rir",
+  "weighBefore": false,
   "routines": [
     {
       "name": "Upper A",
@@ -50,7 +54,7 @@
           "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
         },
         {
-          "id": "2330",
+          "id": "2291",
           "sets": 2,
           "repsMin": 10,
           "reps": 12,
@@ -58,7 +62,7 @@
           "prog": "double",
           "inc": 2.5,
           "freshBaseline": true,
-          "note": "Overhand pulldown. Close-grip and reverse-grip alternatives are saved in this slot.",
+          "note": "Wide overhand grip. Control the stretch and pull in front of the body.",
           "subs": [
             "1047",
             "5123"
@@ -98,7 +102,7 @@
           "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
         }
       ],
-      "id": "mvmha3cdofx35",
+      "id": "strength-upper-a",
       "prog": "double"
     },
     {
@@ -117,7 +121,7 @@
           "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
         },
         {
-          "id": "0410",
+          "id": "2290",
           "sets": 2,
           "repsMin": 16,
           "reps": 24,
@@ -125,7 +129,7 @@
           "prog": "double",
           "inc": 2.5,
           "freshBaseline": true,
-          "note": "8–12 reps per side (16–24 total). Keep the movement controlled.",
+          "note": "Bulgarian split squat: 8–12 reps per side (16–24 total). Keep the movement controlled.",
           "side": true
         },
         {
@@ -162,7 +166,7 @@
           "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
         }
       ],
-      "id": "mvmha3cdtz4iz",
+      "id": "strength-quad",
       "prog": "double"
     },
     {
@@ -202,7 +206,7 @@
           "prog": "double",
           "inc": 2.5,
           "freshBaseline": true,
-          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve.",
+          "note": "Use a close-neutral grip and a controlled full range.",
           "subs": [
             "1047",
             "5123"
@@ -220,13 +224,13 @@
           "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
         },
         {
-          "id": "0334",
+          "id": "0405",
           "sets": 2,
-          "repsMin": 12,
-          "reps": 20,
-          "restSec": 75,
+          "repsMin": 8,
+          "reps": 12,
+          "restSec": 120,
           "prog": "double",
-          "inc": 1,
+          "inc": 2.5,
           "freshBaseline": true,
           "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
         },
@@ -253,7 +257,7 @@
           "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
         }
       ],
-      "id": "mvmha3cdp3teo",
+      "id": "strength-upper-b",
       "prog": "double"
     },
     {
@@ -261,9 +265,20 @@
       "emoji": "legs",
       "ex": [
         {
+          "id": "0032",
+          "sets": 2,
+          "repsMin": 4,
+          "reps": 6,
+          "restSec": 180,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Conventional deadlift. Leave about 2–3 quality reps in reserve; stop when technique deteriorates."
+        },
+        {
           "id": "0085",
-          "sets": 3,
-          "repsMin": 6,
+          "sets": 2,
+          "repsMin": 8,
           "reps": 10,
           "restSec": 180,
           "prog": "double",
@@ -316,7 +331,92 @@
           "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
         }
       ],
-      "id": "mvmha3cds6q66",
+      "id": "strength-posterior",
+      "prog": "double"
+    },
+    {
+      "name": "Upper C · volume",
+      "emoji": "barbell",
+      "ex": [
+        {
+          "id": "0576",
+          "sets": 3,
+          "repsMin": 8,
+          "reps": 12,
+          "restSec": 120,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "5123",
+          "sets": 3,
+          "repsMin": 10,
+          "reps": 12,
+          "restSec": 120,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0596",
+          "sets": 2,
+          "repsMin": 12,
+          "reps": 15,
+          "restSec": 90,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0861",
+          "sets": 2,
+          "repsMin": 10,
+          "reps": 15,
+          "restSec": 120,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0334",
+          "sets": 2,
+          "repsMin": 12,
+          "reps": 20,
+          "restSec": 75,
+          "prog": "double",
+          "inc": 1,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "1607",
+          "sets": 2,
+          "repsMin": 10,
+          "reps": 15,
+          "restSec": 75,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0200",
+          "sets": 2,
+          "repsMin": 10,
+          "reps": 15,
+          "restSec": 75,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        }
+      ],
+      "id": "strength-upper-c",
       "prog": "double"
     },
     {
@@ -358,48 +458,38 @@
           "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
         }
       ],
-      "id": "mvmha3cd0vx05"
+      "id": "strength-accessories"
     }
   ],
-  "trainingCycle": {
-    "kind": "strength-hypertrophy-v1",
-    "anchor": "2026-10-25",
-    "accessoryId": "mvmha3cd0vx05",
-    "weeks": [
-      {
-        "0": [
-          "mvmha3cdofx35"
-        ],
-        "1": [
-          "mvmha3cdtz4iz"
-        ],
-        "2": [
-          "mvmha3cdp3teo"
-        ],
-        "3": [
-          "mvmha3cds6q66"
-        ],
-        "4": [
-          "mvmha3cdofx35"
-        ]
-      },
-      {
-        "0": [
-          "mvmha3cdp3teo"
-        ],
-        "1": [
-          "mvmha3cdtz4iz"
-        ],
-        "2": [
-          "mvmha3cdofx35"
-        ],
-        "3": [
-          "mvmha3cds6q66"
-        ],
-        "4": [
-          "mvmha3cdp3teo"
-        ]
-      }
-    ]
+  "rotation": {
+    "id": "personal-strength",
+    "sequence": [
+      "strength-upper-a",
+      "strength-quad",
+      "strength-upper-b",
+      "strength-posterior",
+      "strength-upper-c"
+    ],
+    "label": "Strength & hypertrophy"
+  },
+  "queue": null,
+  "strengthProfile": {
+    "kind": "strength-hypertrophy-v2",
+    "preferredDays": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "routineIds": [
+      "strength-upper-a",
+      "strength-quad",
+      "strength-upper-b",
+      "strength-posterior",
+      "strength-upper-c"
+    ],
+    "accessoryId": "strength-accessories",
+    "pendingStart": true
   }
 }

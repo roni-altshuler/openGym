@@ -83,7 +83,7 @@ function queueOf(S) {
   const known = new Set((S.routines || []).map(r => r?.id));
   const ids = [...new Set(q.ids)].filter(id => known.has(id));
   if (!ids.length) return null;
-  return { ids, startsOn };
+  return { ids, startsOn, ...(Array.isArray(q.skippedIds) ? { skippedIds: q.skippedIds } : {}) };
 }
 // The reminder tick only ever asks "what's next right now" — there is no separate "today" to
 // preview a different date against, so `today` in the spec's `next(iso, today)` is just `iso`.
@@ -93,7 +93,8 @@ function queueNext(S, iso) {
   const q = queueOf(S);
   if (!q || iso < q.startsOn) return null;
   const done = doneIds(S, q);
-  const remaining = q.ids.filter(id => !done.has(id));
+  const skipped = new Set(Array.isArray(q.skippedIds) ? q.skippedIds : []);
+  const remaining = q.ids.filter(id => !done.has(id) && !skipped.has(id));
   const open = new Set(remaining);
   const pins = Object.entries(S.dayPlan || {}).filter(([d, id]) => d >= iso && open.has(id));
   const here = pins.find(([d]) => d === iso);
@@ -109,7 +110,7 @@ function queueNext(S, iso) {
 export function pinState(S, id) {
   const q = queueOf(S);
   if (!q || !id || !q.ids.includes(id)) return null;
-  return doneIds(S, q).has(id) ? 'done' : 'open';
+  return doneIds(S, q).has(id) || (Array.isArray(q.skippedIds) && q.skippedIds.includes(id)) ? 'done' : 'open';
 }
 
 // A weekday can hold a routine-id list (combine routines); the reminder only needs the first.
@@ -144,5 +145,6 @@ export function queueLiveOn(S, iso) {
   const q = queueOf(S);
   if (!q || iso < q.startsOn) return false;
   const done = doneIds(S, q);
-  return q.ids.some(id => !done.has(id));
+  const skipped = new Set(Array.isArray(q.skippedIds) ? q.skippedIds : []);
+  return q.ids.some(id => !done.has(id) && !skipped.has(id));
 }

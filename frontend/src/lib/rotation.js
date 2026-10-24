@@ -22,7 +22,7 @@
 // old pass would immediately tick an item of the new one.
 
 import { isoOf, todayISO, uid } from './format.js'
-import { queueOf, queueView } from './queue.js'
+import { queueOf, queueView, queueRemaining } from './queue.js'
 
 const routineIdsOf = w => (Array.isArray(w?.routineIds) ? w.routineIds : (w?.routineId ? [w.routineId] : []))
 const dayAfter = iso => { const d = new Date(iso + 'T12:00:00'); d.setDate(d.getDate() + 1); return isoOf(d) }
@@ -92,6 +92,7 @@ export function saveRotation(s, ids, label, today = todayISO(), now = Date.now()
     label,
     rotationId: s.rotation.id,
     ...(prev?.strict === true ? { strict: true } : {}),
+    ...(Array.isArray(prev?.skippedIds) ? { skippedIds: prev.skippedIds.filter(id => ids.includes(id)) } : {}),
   }
   // A session dropped from the rotation leaves its future pin behind otherwise — dayPlan then
   // still resolves that date to a session the queue no longer has (pinState/queue.js).
@@ -228,4 +229,15 @@ export function refillIfComplete(s, today = todayISO(), now = Date.now()) {
   const last = creditWindow(s, q)
     .sort((x, y) => (x.d === y.d ? (x.start || 0) - (y.start || 0) : x.d < y.d ? -1 : 1)).at(-1)
   return last ? refillAfter(s, last, today, now) : false
+}
+
+/** Skip only this occurrence, without recording a workout or changing the saved rotation. */
+export function skipRotationSession(s, id, today = todayISO(), now = Date.now()) {
+  const q = queueOf(s)
+  if (s.active || !q || !s.rotation || q.rotationId !== s.rotation.id || !queueRemaining(s).includes(id)) return false
+  s.queue = { ...q, skippedIds: [...new Set([...(Array.isArray(q.skippedIds) ? q.skippedIds : []), id])] }
+  sweepPins(s, [id], today)
+  // Reuse the same refill boundary as a finish; the boundary event is never added to history.
+  if (queueView(s, today)?.complete) refillAfter(s, { d: today, routineIds: [id] }, today, now)
+  return true
 }

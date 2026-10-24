@@ -70,6 +70,7 @@ const countsFor = (S, q, w, id) => routineIdsOf(w).includes(id)
   && ((w.start ?? 0) >= q.since
     || (q.strict !== true && String(w.d || '') >= q.startsOn && nameParts(w).includes(S.routines.find(r => r.id === id)?.name)))
 const isDone = (S, q, id) => S.workouts.some(w => countsFor(S, q, w, id))
+const skipped = (q, id) => Array.isArray(q.skippedIds) && q.skippedIds.includes(id)
 
 /** The week's sessions already done, in slot order. `[]` without a queue. */
 export function queueDone(S) {
@@ -80,7 +81,7 @@ export function queueDone(S) {
 /** The sessions still to do, in slot order — the first is the next one. `[]` without a queue. */
 export function queueRemaining(S) {
   const q = queueOf(S)
-  return q ? q.ids.filter(id => !isDone(S, q, id)) : []
+  return q ? q.ids.filter(id => !isDone(S, q, id) && !skipped(q, id)) : []
 }
 
 /**
@@ -130,7 +131,7 @@ export function queueLiveOn(S, iso, today) {
 export function pinState(S, id) {
   const q = queueOf(S)
   if (!q || !id || !q.ids.includes(id)) return null
-  return isDone(S, q, id) ? 'done' : 'open'
+  return isDone(S, q, id) || skipped(q, id) ? 'done' : 'open'
 }
 
 /**
@@ -155,7 +156,7 @@ export function queueView(S, today) {
       const pin = id !== next && pins.find(p => p.id === id && p.iso !== on)
       return {
         id, name: nameOf(id),
-        state: !remaining.includes(id) ? 'done' : id === next ? 'next' : pin ? 'pinned' : 'later',
+        state: isDone(S, q, id) ? 'done' : skipped(q, id) ? 'skipped' : id === next ? 'next' : pin ? 'pinned' : 'later',
         ...(pin ? { on: pin.iso } : {}),
       }
     }),

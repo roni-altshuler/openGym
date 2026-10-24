@@ -10,6 +10,7 @@
 
 import { EXIDX, canonicalExId, isBodyweightEq, isCustomEx } from './exercises.js'
 import { portableCycle } from '../../../api/training-cycle.js'
+import { startPass } from './rotation.js'
 import { cleanBackups } from './routine-backups.js'
 import { cleanUrl } from './media-refs.js'
 import { modeOf, exLine, MAX_PLANNED_WARMUPS } from './history.js'
@@ -29,6 +30,11 @@ const PLAN_FMT = 1
 const WEEK_DAYS = [1, 2, 3, 4, 5, 6, 0]   // every getDay() index; only the reader's own
                                           // screen puts them in an order (see weekOrder)
 const PLAN_UNITS = new Set(['kg', 'lb'])
+const portableRotation = (value, map = id => id) => {
+  if (!Array.isArray(value?.sequence)) return null
+  const sequence = [...new Set(value.sequence.map(map).filter(id => typeof id === 'string' && id))]
+  return sequence.length ? { sequence, label: typeof value.label === 'string' ? value.label.slice(0, 200) : '' } : null
+}
 
 // A plan's numbers are in the unit that wrote it. Missing unit is deliberately legacy-compatible:
 // old files were read as already being in the recipient's unit, so keep their values unchanged.
@@ -233,7 +239,8 @@ export function buildPlanBundle(S, name) {
   const week = {}
   WEEK_DAYS.forEach(d => { if (S.week?.[d]?.length) week[d] = [].concat(S.week[d]) })
   const trainingCycle = portableCycle(S.trainingCycle, id => routines.some(r => r.id === id) ? id : null)
-  return { opengym_plan: PLAN_FMT, exported: todayISO(), name: name || '', unit, week, routines, customEx, ...(trainingCycle ? { trainingCycle } : {}) }
+  const rotation = portableRotation(S.rotation, id => routines.some(r => r.id === id) ? id : null)
+  return { opengym_plan: PLAN_FMT, exported: todayISO(), name: name || '', unit, week, routines, customEx, ...(trainingCycle ? { trainingCycle } : {}), ...(rotation ? { rotation, scheduleMode: S.scheduleMode === 'rotation' || S.queue ? 'rotation' : 'week' } : {}) }
 }
 
 /**
@@ -287,8 +294,10 @@ export function parsePlan(raw, destinationUnit = 'kg') {
     })
   }))
   const trainingCycle = portableCycle(data.trainingCycle, id => routines.some(r => r.id === id) ? id : null)
+  const rotation = portableRotation(data.rotation, id => routines.some(r => r.id === id) ? id : null)
   return {
     ...(trainingCycle ? { trainingCycle } : {}),
+    ...(rotation ? { rotation, scheduleMode: data.scheduleMode === 'rotation' ? 'rotation' : 'week' } : {}),
     name: (data.name || '').trim(),
     routines,
     week: data.week || {},
@@ -344,6 +353,11 @@ export function mergePlan(s, bundle, { schedule } = {}) {
   if (schedule) {
     s.trainingCycle = portableCycle(source.trainingCycle, id => ridMap[id])
     if (s.trainingCycle) { s.weekStart = 0; s.queue = null; s.scheduleMode = 'week' }
+    const rotation = portableRotation(source.rotation, id => ridMap[id])
+    if (rotation) {
+      s.rotation = { id: uid(), ...rotation }
+      if (source.scheduleMode === 'rotation') { s.trainingCycle = null; s.scheduleMode = 'rotation'; startPass(s) }
+    }
     WEEK_DAYS.forEach(d => { delete s.week[d] })
     Object.entries(source.week || {}).forEach(([d, val]) => {
       // `[].concat` tolerates a pre-upgrade scalar bundle value. An element whose routine id
@@ -446,10 +460,13 @@ export function planPrintHTML(S, owner, { routineId } = {}) {
   const body = routines.length
     ? routines.map(r => routineHTML(r, unit, { bare: !!single, speedUnit: speedUnitOf(S) })).join('')
     : `<p class="none">${esc(t('No routines yet.'))}</p>`
-  const title = single ? single.name : t('Weekly Training Plan')
+  const rotation = S.scheduleMode === 'rotation' || S.queue ? portableRotation(S.rotation) : null
+  const title = single ? single.name : rotation ? 'Strength & hypertrophy rotation' : t('Weekly Training Plan')
   const sub = [single ? exCount(single.ex.length) : null, owner, todayISO()].filter(Boolean).map(esc).join(' · ')
   const cycle = portableCycle(S.trainingCycle)
-  const scheduleHTML = cycle
+  const scheduleHTML = rotation
+    ? `<h3 class="block">Ongoing rotation</h3><p>Train on any day. Continue with the next session; no fixed start or end date.</p><ol>${rotation.sequence.map(id => `<li>${esc(S.routines.find(r => r.id === id)?.name || id)}</li>`).join('')}</ol>`
+    : cycle
     ? cycle.weeks.map((week, i) => `<h3 class="block">Week ${i === 0 ? 'A' : 'B'}</h3>${weekHTML({ ...S, week, weekStart: 0 })}`).join('')
     : `<h3 class="block">${esc(t('Week schedule'))}</h3>${weekHTML(S)}`
   const week = routineId ? '' : `${scheduleHTML}

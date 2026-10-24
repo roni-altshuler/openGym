@@ -12,7 +12,6 @@ import Icon from '../components/Icon.jsx'
 import { Button, Row, Section, Segmented } from '../components/ui.jsx'
 import SwipeRow from '../components/SwipeRow.jsx'
 import StrengthProgram from '../components/StrengthProgram.jsx'
-import GarminActivities from '../components/GarminActivities.jsx'
 import { copyRoutine, deleteRoutine, restoreRoutine, routineSnapshot } from '../lib/routines.js'
 import { workoutControls } from '../lib/workout-controls.js'
 import { tappable } from '../lib/use-sheet-keyboard.js'
@@ -26,7 +25,7 @@ import { deriveSessionName } from '../lib/session-merge.js'
 import { markUndone, undoMarks } from '../lib/sync-merge.js'
 import {
   scheduleModeOf, queueRecovery, rotationIds, saveRotation, startNewPass, startPass, stopPass,
-  chooseRotation, chooseFixedWeek,
+  chooseRotation, chooseFixedWeek, skipRotationSession,
 } from '../lib/rotation.js'
 
 // Plan has two views (v1.3.11): Schedule (how you train, and when) and Routines (what you
@@ -164,7 +163,7 @@ export default function Plan() {
 
   return <div className="narrow plan">
     <div className="hdr">
-      <div><h1>{t('Plan')}</h1><div className="sub">{S.trainingCycle ? 'Your two-week strength program' : mode === 'rotation' ? t('Your routines in a loop') : t('Your weekly routine')}</div></div>
+      <div><h1>{t('Plan')}</h1><div className="sub">{mode === 'rotation' ? t('Your routines in a loop') : t('Your weekly routine')}</div></div>
       <div className="hdr-actions">
         {showCoach && <Button size="sm" variant="tinted" icon="sparkles" onClick={() => nav('/coach')}>{t('Coach')}</Button>}
         <button className="iconbtn" onClick={openMenu} aria-label={t('Plan options')} title={t('Plan options')}><Icon name="share" /></button>
@@ -176,8 +175,7 @@ export default function Plan() {
       options={[{ value: 'schedule', label: t('Schedule') }, { value: 'routines', label: t('Routines') }]} />
     {view === 'routines'
       ? <Routines S={S} update={update} nav={nav} />
-      : S.trainingCycle ? <p className="small dim">Your two-week calendar is shown above. Open Routines to edit individual exercises and their targets.</p> : <Schedule S={S} update={update} nav={nav} mode={mode} />}
-    {!DEMO && user && <GarminActivities key={user.id} />}
+      : <Schedule S={S} update={update} nav={nav} mode={mode} />}
     {!DEMO && <p className="small dim"><a href="https://github.com/roni-altshuler/openGym/tree/personalize/strength-cycle" target="_blank" rel="noreferrer">Source for this version · AGPL</a></p>}
   </div>
 }
@@ -277,7 +275,7 @@ function Schedule({ S, update, nav, mode }) {
   const plannedDays = weekOrder(ws).filter(d => extraRoutines(d).length)
   const doneCount = qv ? qv.items.filter(i => i.state === 'done').length : 0
   const stateWord = item => item.state === 'pinned' ? fmtDate(item.on, true)
-    : { done: t('Done'), next: t('Up next'), later: t('Later') }[item.state]
+    : { done: t('Done'), next: t('Up next'), later: t('Later'), skipped: 'Skipped this round' }[item.state]
   const editing = editLoop && !external
 
   return <>
@@ -352,6 +350,17 @@ function Schedule({ S, update, nav, mode }) {
         {external ? '' : editing ? t('Drag to reorder. Tap the minus to take one out.') : t('Trained out of order? Just pick another routine on Home.')}
       </p>}
       <div className="row" style={{ gap: 8, marginTop: 4, flexWrap: 'wrap' }}>
+        {managed && !S.active && qv?.items.some(i => i.state === 'next') && <Button size="sm" onClick={() => {
+          const id = qv.items.find(i => i.state === 'next').id
+          const before = structuredClone({ queue: S.queue, dayPlan: S.dayPlan || {} })
+          update(s => skipRotationSession(s, id))
+          const mark = JSON.stringify(useStore.getState().S.queue)
+          useUI.getState().toast('Skipped this round. No workout was logged.', { action: t('Undo'), onAction: () => update(s => {
+            if (JSON.stringify(s.queue) !== mark) return
+            s.queue = before.queue
+            for (const [date, pin] of Object.entries(before.dayPlan)) if (pin === id && s.dayPlan?.[date] == null) s.dayPlan[date] = pin
+          }) })
+        }}>Skip next session once</Button>}
         {external && <Button size="sm" variant="tinted" aria-label={t('Use this rotation')} onClick={adopt}>{t('Use this rotation')}</Button>}
         {/* Throws the current round away and starts the saved loop again today; nothing logged
             before this moment counts for it (startNewPass, the strict pass). */}

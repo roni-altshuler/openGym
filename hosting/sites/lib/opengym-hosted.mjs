@@ -2,6 +2,7 @@ import { sealGarminKey, openGarminKey } from './garmin-vault.mjs'
 import { createGarminClient } from './garmin-client.mjs'
 import { stampPut } from './opengym-sync-stamps.mjs'
 import seed from './strength-seed.json' with { type: 'json' }
+import { encodeProfile, decodeProfile } from './profile-codec.mjs'
 
 const json = (body, status = 200) => Response.json(body, { status, headers: {
   'Cache-Control': 'no-store, private', 'X-Content-Type-Options': 'nosniff',
@@ -34,7 +35,7 @@ async function readJson(request, limit) {
 async function profile(DB, id) {
   await DB.prepare('INSERT OR IGNORE INTO profiles (user_id,state,revision) VALUES (?,?,0)').bind(id, JSON.stringify(seed)).run()
   const row = await DB.prepare('SELECT state,revision FROM profiles WHERE user_id=?').bind(id).first()
-  return { state: JSON.parse(row.state), rev: row.revision }
+  return { state: await decodeProfile(row.state), rev: row.revision }
 }
 async function credential(DB, id) {
   return DB.prepare('SELECT encrypted_garmin_key,last_pull FROM credentials WHERE user_id=?').bind(id).first()
@@ -55,7 +56,7 @@ export async function hostedApi(request, env, { fetchImpl = fetch, now = Date.no
       return json({ rev: row.rev, ...(row.state._wid ? { wid: row.state._wid } : {}) })
     }
     if (route === '/api/data' && request.method === 'PUT') {
-      const body = await readJson(request, 5 * 1024 * 1024), state = body?.state
+      const body = await readJson(request, 10 * 1024 * 1024), state = body?.state
       if (!state || typeof state !== 'object' || Array.isArray(state) || !Array.isArray(state.routines) || !Array.isArray(state.workouts)) return json({ error: 'Invalid workout state.' }, 400)
       const current = await profile(env.DB, user.id)
       if (!Number.isInteger(body.baseRev) || body.baseRev !== current.rev || (body.baseWid && current.state._wid && body.baseWid !== current.state._wid)) return json({ error: 'conflict', ...current }, 409)
@@ -70,7 +71,8 @@ export async function hostedApi(request, env, { fetchImpl = fetch, now = Date.no
       state._wids = [...(current.state._wids || []), ...(current.state._wid ? [current.state._wid] : [])].slice(-50)
       state._wid = crypto.randomUUID()
       // The SQL revision predicate makes concurrent phone/desktop updates atomic.
-      const result = await env.DB.prepare('UPDATE profiles SET state=?,revision=? WHERE user_id=? AND revision=?').bind(JSON.stringify(state), state._rev, user.id, current.rev).run()
+      const stored = await encodeProfile(state)
+      const result = await env.DB.prepare('UPDATE profiles SET state=?,revision=? WHERE user_id=? AND revision=?').bind(stored, state._rev, user.id, current.rev).run()
       if (!result.meta?.changes) return json({ error: 'conflict', ...await profile(env.DB, user.id) }, 409)
       return json({ ok: true, ts: state._ts || null, rev: current.rev + 1, wid: state._wid })
     }
@@ -106,6 +108,6 @@ export async function hostedApi(request, env, { fetchImpl = fetch, now = Date.no
     return json({ error: 'This optional server feature is not enabled on private hosting.' }, 404)
   } catch (error) {
     // Never send/log exception messages, body contents, keys, tokens, or upstream responses.
-    return json({ error: error?.status ? 'The request could not be accepted.' : 'Could not complete the request. For Garmin, check the key and its expiry.' }, error?.status || 502)
+    return json({ error: error?.status ? 'The request could not be accepted.' : 'Could not complete the request. Please try again.' }, error?.status || 502)
   }
 }

@@ -68,6 +68,18 @@ const headings = () => [...host.querySelectorAll('h4.sec')].map(h => h.firstChil
 const subtitle = () => host.querySelector('.hdr .sub').textContent
 
 describe('Plan — How you train', () => {
+  it('skips a session once without deleting it or fabricating workout history', () => {
+    mount({ queue: live({ rotationId: saved.id }), rotation: saved, scheduleMode: 'rotation' })
+    click(byLabel('Skip next session once'))
+    expect(mocks.S.queue.skippedIds).toEqual(['a'])
+    expect(mocks.S.rotation.sequence).toEqual(['a', 'b'])
+    expect(mocks.S.workouts).toEqual([])
+    expect(host.querySelector('input[type="date"]')).toBeNull()
+    expect(host.textContent).not.toMatch(/Week A|Week B|swim/i)
+    remount()
+    expect(rows()[0].textContent).toContain('Skipped this round')
+    expect(rows()[1].textContent).toContain('Up next')
+  })
   it('nothing saved: Fixed Week with the weekdays, and no rotation buttons of its own', () => {
     mount()
     expect(selectedMode()).toBe('Fixed Week')

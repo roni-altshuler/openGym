@@ -1,11 +1,28 @@
 # Private Sites adapter
 
-This folder preserves the private hosting adapter source used by this fork. It runs in the Sites Vinext starter, with a `DB` D1 binding and a private runtime secret named `GARMIN_KEY_ENCRYPTION_SECRET`. Generate that secret with a cryptographically secure 32-byte random value; never put it in source. Keep Sites owner-only access.
+This folder preserves the optional private hosting adapter. It runs in the Sites Vinext
+starter with a `DB` D1 binding. Keep Sites owner-only access. The live app uses ChatGPT
+sign-in at https://roni-strength.wiggly-shore-5967.chatgpt.site .
 
-The app is available to its owner at https://roni-strength.wiggly-shore-5967.chatgpt.site and uses ChatGPT sign-in. Garmin is optional and is deferred for the initial phone setup: no key is required. If enabled later, the private setup form verifies the key with Garmin and stores only AES-256-GCM ciphertext. Workout backups exclude it.
+The preset is an indefinite five-session rotation with no prescribed dates. Run
+`node hosting/sites/generate-seed.mjs` from the fork root to reproduce the generic seed.
+The app activates a new profile on first use and migrates the earlier dated draft without
+removing history. No personal logs, starting loads or credentials belong in source.
 
-For this deployment, build the frontend with `VITE_IMG_BASE=/exercise-media/still/` and `VITE_GIF_BASE=/exercise-media/clip/`. The app is served from `/gym/`, while the unchanged exercise media is staged at the site root.
+Build the frontend with `VITE_IMG_BASE=/exercise-media/still/` and
+`VITE_GIF_BASE=/exercise-media/clip/`: the frontend is served from `/gym/` and the unchanged
+licensed media from the site root. Stage the matching frontend and media after the Worker
+build. Preserve all license/media notices. See HOSTING.md for publication details.
 
-The normal Docker/Node deployment remains supported. It uses its private server environment variables instead of the hosted credential form. See the root personal setup guide and HOSTING.md here.
+Garmin is deferred and hidden from the default UI. No key or master secret is needed for
+workout tracking. The dormant credential routes require a runtime-only
+`GARMIN_KEY_ENCRYPTION_SECRET` if used later; never commit it. No actual key is configured.
 
-Tests: `node --test test/hosted.test.mjs` from this folder. These use synthetic credentials and an in-memory test database. No private key or personal workout history is included.
+This adapter is smaller than the original backend: personal media sync, native pairing,
+server push, AI Coach and the filesystem MCP connection are not implemented here. Their
+original code and opt-in setup remain in the fork's full Docker/Node edition. See
+[personal setup](../../docs/PERSONAL_SETUP.md) for the supported-feature table and migration path.
+No paid AI provider is enabled automatically.
+
+Tests: `node --test test/hosted.test.mjs` from this folder. These use synthetic fixtures and
+an in-memory database to check authorization, secret separation and concurrent saves.
