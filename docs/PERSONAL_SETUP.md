@@ -72,6 +72,25 @@ The local preview can also be inspected in guest mode without a running API.
 
 ## Optional Garmin Personal API
 
+### Private hosted app on your phone
+
+The private hosted edition is at https://roni-strength.wiggly-shore-5967.chatgpt.site .
+Sign in with the same ChatGPT account that owns the Site. The prepared plan starts with
+Week A on Sunday, 25 October 2026. You can edit the routines and calendar in Plan.
+
+For Garmin, open **Plan → Garmin → Check connection setup**, paste your existing Personal
+API key into the private password field and select **Connect Garmin securely**. The form
+clears the value immediately; the server verifies it directly with Garmin, encrypts it using
+AES-256-GCM and stores the ciphertext separately from workout data. Never send the key in chat.
+After connection, select **Read recent activities**. **Disconnect Garmin** removes the saved key.
+
+Hosted workouts sync through a private D1 database with revision checks. The key is excluded
+from workout backups. Hosting uses ChatGPT sign-in instead of openGym passkeys; native pairing,
+custom-media uploads, the AI coach and server push notifications are disabled in this edition.
+The original Docker edition below retains its own server capabilities and configuration.
+
+### Docker/server configuration
+
 The official [Personal API overview](https://developer.garmin.com/gc-developer-program/overview/),
 [FAQ](https://developer.garmin.com/gc-developer-program/personal/personal-faq/) and
 [Swagger](https://developer.garmin.com/gc-developer-program/personal/swagger-docs/) were checked

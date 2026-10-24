@@ -1,0 +1,405 @@
+{
+  "unit": "kg",
+  "weekStart": 0,
+  "scheduleMode": "week",
+  "week": {},
+  "dayPlan": {},
+  "workouts": [],
+  "bodyweight": [],
+  "exWeights": {},
+  "customEx": [],
+  "active": null,
+  "routines": [
+    {
+      "name": "Upper A",
+      "emoji": "barbell",
+      "ex": [
+        {
+          "id": "0025",
+          "sets": 3,
+          "repsMin": 6,
+          "reps": 8,
+          "restSec": 180,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0652",
+          "sets": 3,
+          "repsMin": 5,
+          "reps": 8,
+          "restSec": 150,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Start at bodyweight (0 kg added). Build clean reps across every set before adding the smallest belt load. Log added kg only.",
+          "bodyweight": true,
+          "weightedAfterTop": true
+        },
+        {
+          "id": "0861",
+          "sets": 3,
+          "repsMin": 8,
+          "reps": 12,
+          "restSec": 120,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "2330",
+          "sets": 2,
+          "repsMin": 10,
+          "reps": 12,
+          "restSec": 120,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Overhand pulldown. Close-grip and reverse-grip alternatives are saved in this slot.",
+          "subs": [
+            "1047",
+            "5123"
+          ]
+        },
+        {
+          "id": "0334",
+          "sets": 2,
+          "repsMin": 12,
+          "reps": 20,
+          "restSec": 75,
+          "prog": "double",
+          "inc": 1,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0200",
+          "sets": 2,
+          "repsMin": 10,
+          "reps": 15,
+          "restSec": 75,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0592",
+          "sets": 2,
+          "repsMin": 10,
+          "reps": 15,
+          "restSec": 75,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        }
+      ],
+      "id": "mvmha3cdofx35",
+      "prog": "double"
+    },
+    {
+      "name": "Lower · quad emphasis",
+      "emoji": "legs",
+      "ex": [
+        {
+          "id": "0043",
+          "sets": 3,
+          "repsMin": 6,
+          "reps": 8,
+          "restSec": 180,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0410",
+          "sets": 2,
+          "repsMin": 16,
+          "reps": 24,
+          "restSec": 120,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "8–12 reps per side (16–24 total). Keep the movement controlled.",
+          "side": true
+        },
+        {
+          "id": "0585",
+          "sets": 3,
+          "repsMin": 10,
+          "reps": 15,
+          "restSec": 90,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0599",
+          "sets": 3,
+          "repsMin": 10,
+          "reps": 15,
+          "restSec": 90,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0605",
+          "sets": 3,
+          "repsMin": 10,
+          "reps": 15,
+          "restSec": 75,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        }
+      ],
+      "id": "mvmha3cdtz4iz",
+      "prog": "double"
+    },
+    {
+      "name": "Upper B",
+      "emoji": "pullup",
+      "ex": [
+        {
+          "id": "0314",
+          "sets": 3,
+          "repsMin": 8,
+          "reps": 12,
+          "restSec": 150,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0814",
+          "sets": 2,
+          "repsMin": 6,
+          "reps": 10,
+          "restSec": 150,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Start at bodyweight (0 kg added). Build clean reps across every set before adding the smallest belt load. Log added kg only.",
+          "bodyweight": true,
+          "weightedAfterTop": true
+        },
+        {
+          "id": "7583",
+          "sets": 3,
+          "repsMin": 8,
+          "reps": 12,
+          "restSec": 120,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve.",
+          "subs": [
+            "1047",
+            "5123"
+          ]
+        },
+        {
+          "id": "1351",
+          "sets": 3,
+          "repsMin": 8,
+          "reps": 12,
+          "restSec": 120,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0334",
+          "sets": 2,
+          "repsMin": 12,
+          "reps": 20,
+          "restSec": 75,
+          "prog": "double",
+          "inc": 1,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0602",
+          "sets": 2,
+          "repsMin": 12,
+          "reps": 20,
+          "restSec": 75,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0313",
+          "sets": 2,
+          "repsMin": 10,
+          "reps": 15,
+          "restSec": 75,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        }
+      ],
+      "id": "mvmha3cdp3teo",
+      "prog": "double"
+    },
+    {
+      "name": "Lower · posterior emphasis",
+      "emoji": "legs",
+      "ex": [
+        {
+          "id": "0085",
+          "sets": 3,
+          "repsMin": 6,
+          "reps": 10,
+          "restSec": 180,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0599",
+          "sets": 3,
+          "repsMin": 8,
+          "reps": 12,
+          "restSec": 90,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "2146",
+          "sets": 2,
+          "repsMin": 10,
+          "reps": 15,
+          "restSec": 120,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0585",
+          "sets": 2,
+          "repsMin": 12,
+          "reps": 15,
+          "restSec": 90,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0605",
+          "sets": 3,
+          "repsMin": 10,
+          "reps": 15,
+          "restSec": 75,
+          "prog": "double",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        }
+      ],
+      "id": "mvmha3cds6q66",
+      "prog": "double"
+    },
+    {
+      "name": "Optional · accessories",
+      "emoji": "barbell",
+      "prog": "off",
+      "ex": [
+        {
+          "id": "0334",
+          "sets": 2,
+          "repsMin": 12,
+          "reps": 20,
+          "restSec": 60,
+          "prog": "off",
+          "inc": 1,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0313",
+          "sets": 2,
+          "repsMin": 10,
+          "reps": 15,
+          "restSec": 60,
+          "prog": "off",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        },
+        {
+          "id": "0200",
+          "sets": 2,
+          "repsMin": 10,
+          "reps": 15,
+          "restSec": 60,
+          "prog": "off",
+          "inc": 2.5,
+          "freshBaseline": true,
+          "note": "Choose a controlled working load today. Log actual reps; leave about 1–2 reps in reserve."
+        }
+      ],
+      "id": "mvmha3cd0vx05"
+    }
+  ],
+  "trainingCycle": {
+    "kind": "strength-hypertrophy-v1",
+    "anchor": "2026-10-25",
+    "accessoryId": "mvmha3cd0vx05",
+    "weeks": [
+      {
+        "0": [
+          "mvmha3cdofx35"
+        ],
+        "1": [
+          "mvmha3cdtz4iz"
+        ],
+        "2": [
+          "mvmha3cdp3teo"
+        ],
+        "3": [
+          "mvmha3cds6q66"
+        ],
+        "4": [
+          "mvmha3cdofx35"
+        ]
+      },
+      {
+        "0": [
+          "mvmha3cdp3teo"
+        ],
+        "1": [
+          "mvmha3cdtz4iz"
+        ],
+        "2": [
+          "mvmha3cdofx35"
+        ],
+        "3": [
+          "mvmha3cds6q66"
+        ],
+        "4": [
+          "mvmha3cdp3teo"
+        ]
+      }
+    ]
+  }
+}

@@ -1796,6 +1796,7 @@ export const useStore = create((set, get) => {
        Otherwise { owed: false } or { owed: true, count, stashed: true }, signed out. A workout
        running here is kept aside either way (stashActive), and the rest and hold timers stop. */
     async signOut({ force = false } = {}) {
+      const hostedIdentity = get().config?.hosted_identity
       await settle()
       const left = get().unsyncedChanges()
       if (left.owed && !force) return owedResult(left)
@@ -1806,6 +1807,7 @@ export const useStore = create((set, get) => {
       // behind, still valid, so the logout is owed until the server answers it (see boot).
       try { await api('/api/logout', { method: 'POST', body: '{}' }) } catch (e) { if (!MOBILE) logoutOwed(true) }
       await clearLocalSession()
+        if (hostedIdentity) window.location.assign('/signout-with-chatgpt?return_to=%2F')
       return left.owed ? owedResult(left, { stashed: true }) : { owed: false }
     },
 

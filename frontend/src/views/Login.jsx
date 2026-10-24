@@ -81,6 +81,12 @@ export default function Login() {
   </>
   const wrap = { display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '78vh', textAlign: 'center' }
 
+  if (config?.hosted_identity) return <div className="narrow" style={wrap}>
+    {head}
+    <p className="muted">Your workouts are private to your ChatGPT account.</p>
+    <a className="btn primary" href="/signin-with-chatgpt?return_to=%2Fgym%2Findex.html%23%2Fplan" target="_top">Sign in with ChatGPT</a>
+  </div>
+
   // Demo build: no backend to sign in against — the only way in is the local guest profile.
   if (DEMO) return (
     <div className="narrow" style={wrap}>
