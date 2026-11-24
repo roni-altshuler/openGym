@@ -1,0 +1,457 @@
+{
+  "opengym_plan": 1,
+  "name": "Strength & Hypertrophy",
+  "unit": "kg",
+  "week": {
+    "0": [
+      "upper-a"
+    ],
+    "1": [
+      "lower-a"
+    ],
+    "2": [
+      "back-delts-arms"
+    ],
+    "3": [
+      "lower-b"
+    ],
+    "4": [
+      "upper-b"
+    ]
+  },
+  "routines": [
+    {
+      "id": "upper-a",
+      "name": "Upper A · Strength",
+      "emoji": "barbell",
+      "prog": "double",
+      "ex": [
+        {
+          "id": "0025",
+          "sets": 3,
+          "reps": 8,
+          "repsMin": 5,
+          "weight": 0,
+          "restSec": 180,
+          "warmupSets": 2,
+          "subs": [
+            "0289"
+          ],
+          "note": "Ramp up, then start with a load you can press for 5 clean reps with 2–3 reps left. Pause briefly on the chest."
+        },
+        {
+          "id": "0652",
+          "sets": 3,
+          "reps": 8,
+          "repsMin": 5,
+          "weight": 0,
+          "restSec": 180,
+          "repsMax": 8,
+          "inc": 1.25,
+          "subs": [
+            "0017"
+          ],
+          "note": "Use a strict pull-up and lower under control. Start at bodyweight and aim for 5 clean reps. When all 3 sets reach 8 with 1–2 reps left, add the smallest belt load and return to 5. Log added weight only."
+        },
+        {
+          "id": "0251",
+          "sets": 2,
+          "reps": 10,
+          "repsMin": 6,
+          "weight": 0,
+          "restSec": 150,
+          "repsMax": 10,
+          "inc": 1.25,
+          "subs": [
+            "0009"
+          ],
+          "note": "Keep the descent controlled and use a comfortable depth. Start at bodyweight and aim for 6 clean reps. When all 2 sets reach 10 with 1–2 reps left, add the smallest belt load and return to 6. Log added weight only."
+        },
+        {
+          "id": "0861",
+          "sets": 3,
+          "reps": 12,
+          "repsMin": 8,
+          "weight": 0,
+          "restSec": 120,
+          "subs": [
+            "1350"
+          ],
+          "note": "Reach forward under control, then pull the handle toward the lower ribs."
+        },
+        {
+          "id": "0192",
+          "sets": 2,
+          "reps": 40,
+          "repsMin": 24,
+          "weight": 0,
+          "restSec": 75,
+          "side": true,
+          "subs": [
+            "0334"
+          ],
+          "note": "Lead with the elbow and lower the handle slowly. Reps are per arm."
+        },
+        {
+          "id": "0318",
+          "sets": 2,
+          "reps": 15,
+          "repsMin": 10,
+          "weight": 0,
+          "restSec": 75,
+          "dbLoad": "each",
+          "subs": [
+            "0868"
+          ],
+          "note": "Keep the upper arm still and control the lowering. Log weight per dumbbell."
+        }
+      ]
+    },
+    {
+      "id": "lower-a",
+      "name": "Lower A · Squat",
+      "emoji": "legs",
+      "prog": "double",
+      "ex": [
+        {
+          "id": "0043",
+          "sets": 3,
+          "reps": 8,
+          "repsMin": 5,
+          "weight": 0,
+          "restSec": 180,
+          "warmupSets": 2,
+          "subs": [
+            "1760"
+          ],
+          "note": "Ramp up to a load that leaves about 3 reps in reserve on the first session. Keep depth and bracing consistent."
+        },
+        {
+          "id": "0085",
+          "sets": 3,
+          "reps": 10,
+          "repsMin": 6,
+          "weight": 0,
+          "restSec": 150,
+          "warmupSets": 1,
+          "subs": [
+            "1459"
+          ],
+          "note": "Keep the bar close and hinge until you feel your hamstrings load. Use that range on every rep."
+        },
+        {
+          "id": "0585",
+          "sets": 2,
+          "reps": 15,
+          "repsMin": 10,
+          "weight": 0,
+          "restSec": 90,
+          "note": "Control the lowering and use a smooth turnaround."
+        },
+        {
+          "id": "0599",
+          "sets": 2,
+          "reps": 15,
+          "repsMin": 10,
+          "weight": 0,
+          "restSec": 90,
+          "subs": [
+            "0586"
+          ],
+          "note": "Set the seat so your hips stay planted as you curl."
+        },
+        {
+          "id": "0605",
+          "sets": 3,
+          "reps": 15,
+          "repsMin": 8,
+          "weight": 0,
+          "restSec": 90,
+          "subs": [
+            "0417"
+          ],
+          "note": "Pause at the bottom, then rise smoothly through the full range."
+        },
+        {
+          "id": "0175",
+          "sets": 2,
+          "reps": 15,
+          "repsMin": 10,
+          "weight": 0,
+          "restSec": 75,
+          "note": "Curl ribs toward pelvis with the hips mostly still."
+        }
+      ]
+    },
+    {
+      "id": "back-delts-arms",
+      "name": "Back, Delts & Arms",
+      "emoji": "pullup",
+      "prog": "double",
+      "ex": [
+        {
+          "id": "2616",
+          "sets": 3,
+          "reps": 12,
+          "repsMin": 8,
+          "weight": 0,
+          "restSec": 120,
+          "subs": [
+            "2330"
+          ],
+          "note": "Use a neutral V-handle. Pull your elbows down and let the lats lengthen under control on the way up."
+        },
+        {
+          "id": "0602",
+          "sets": 2,
+          "reps": 20,
+          "repsMin": 12,
+          "weight": 0,
+          "restSec": 75,
+          "subs": [
+            "0383"
+          ],
+          "note": "Keep the chest supported and sweep your arms out to train the rear delts."
+        },
+        {
+          "id": "0334",
+          "sets": 3,
+          "reps": 20,
+          "repsMin": 12,
+          "weight": 0,
+          "restSec": 75,
+          "dbLoad": "each",
+          "note": "Raise smoothly without swinging. Log weight per dumbbell."
+        },
+        {
+          "id": "0868",
+          "sets": 2,
+          "reps": 15,
+          "repsMin": 10,
+          "weight": 0,
+          "restSec": 75,
+          "note": "Keep your torso quiet and lower under control. The last set can finish with 1 clean rep left."
+        },
+        {
+          "id": "0194",
+          "sets": 2,
+          "reps": 15,
+          "repsMin": 10,
+          "weight": 0,
+          "restSec": 75,
+          "subs": [
+            "0200"
+          ],
+          "note": "Keep your upper arms steady and control the stretch. The last set can finish with 1 clean rep left."
+        }
+      ]
+    },
+    {
+      "id": "lower-b",
+      "name": "Lower B · Unilateral & Glutes",
+      "emoji": "legs",
+      "prog": "double",
+      "ex": [
+        {
+          "id": "0410",
+          "sets": 3,
+          "reps": 24,
+          "repsMin": 16,
+          "weight": 0,
+          "restSec": 120,
+          "side": true,
+          "sideRestSec": 15,
+          "dbLoad": "each",
+          "subs": [
+            "0336"
+          ],
+          "note": "Rear-foot-elevated split squat. Start light with about 3 reps left per leg. Log weight per dumbbell."
+        },
+        {
+          "id": "1409",
+          "sets": 3,
+          "reps": 12,
+          "repsMin": 8,
+          "weight": 0,
+          "restSec": 120,
+          "warmupSets": 1,
+          "note": "Drive through the feet and finish by squeezing your glutes. Keep the ribs down at the top."
+        },
+        {
+          "id": "0586",
+          "sets": 2,
+          "reps": 15,
+          "repsMin": 10,
+          "weight": 0,
+          "restSec": 90,
+          "subs": [
+            "0599"
+          ],
+          "note": "Keep your hips against the pad and lower the weight slowly."
+        },
+        {
+          "id": "0585",
+          "sets": 2,
+          "reps": 18,
+          "repsMin": 12,
+          "weight": 0,
+          "restSec": 75,
+          "note": "Use a lighter load for this higher-rep slot. Match your range across all reps."
+        },
+        {
+          "id": "0594",
+          "sets": 3,
+          "reps": 15,
+          "repsMin": 10,
+          "weight": 0,
+          "restSec": 90,
+          "subs": [
+            "0605"
+          ],
+          "note": "Pause briefly in the stretched position and at the top of each rep."
+        },
+        {
+          "id": "0705",
+          "mode": "time",
+          "sets": 2,
+          "sec": 30,
+          "side": true,
+          "restSec": 45,
+          "prog": "off",
+          "note": "Side plank. Hold for 30 seconds on each side and keep your hips level."
+        }
+      ]
+    },
+    {
+      "id": "upper-b",
+      "name": "Upper B · Hypertrophy",
+      "emoji": "dumbbell",
+      "prog": "double",
+      "ex": [
+        {
+          "id": "0652",
+          "sets": 3,
+          "reps": 10,
+          "repsMin": 6,
+          "weight": 0,
+          "restSec": 150,
+          "repsMax": 10,
+          "inc": 1.25,
+          "subs": [
+            "0017"
+          ],
+          "note": "Use the same strict pull-up as Upper A. This slot has a higher rep range. Start at bodyweight and aim for 6 clean reps. When all 3 sets reach 10 with 1–2 reps left, add the smallest belt load and return to 6. Log added weight only."
+        },
+        {
+          "id": "0314",
+          "sets": 3,
+          "reps": 12,
+          "repsMin": 8,
+          "weight": 0,
+          "restSec": 150,
+          "warmupSets": 1,
+          "dbLoad": "each",
+          "subs": [
+            "0047"
+          ],
+          "note": "Use a low incline and a controlled lowering. Log weight per dumbbell."
+        },
+        {
+          "id": "0251",
+          "sets": 2,
+          "reps": 12,
+          "repsMin": 8,
+          "weight": 0,
+          "restSec": 150,
+          "repsMax": 12,
+          "inc": 1.25,
+          "subs": [
+            "0009"
+          ],
+          "note": "Use a controlled dip and keep a rep or two in reserve. Start at bodyweight and aim for 8 clean reps. When all 2 sets reach 12 with 1–2 reps left, add the smallest belt load and return to 8. Log added weight only."
+        },
+        {
+          "id": "0327",
+          "sets": 3,
+          "reps": 12,
+          "repsMin": 8,
+          "weight": 0,
+          "restSec": 120,
+          "dbLoad": "each",
+          "subs": [
+            "0606"
+          ],
+          "note": "Keep your chest on the bench as you row. Log weight per dumbbell."
+        },
+        {
+          "id": "3563",
+          "sets": 2,
+          "reps": 30,
+          "repsMin": 20,
+          "weight": 0,
+          "restSec": 90,
+          "side": true,
+          "sideRestSec": 15,
+          "note": "Pull the elbow toward your hip. Let the lat lengthen at the top without twisting."
+        },
+        {
+          "id": "0313",
+          "sets": 2,
+          "reps": 15,
+          "repsMin": 10,
+          "weight": 0,
+          "restSec": 75,
+          "dbLoad": "each",
+          "note": "Keep a neutral grip and avoid swinging. Log weight per dumbbell."
+        },
+        {
+          "id": "0200",
+          "sets": 2,
+          "reps": 18,
+          "repsMin": 12,
+          "weight": 0,
+          "restSec": 75,
+          "note": "Keep your elbows steady. Finish the last set with 1–2 clean reps in reserve."
+        }
+      ]
+    },
+    {
+      "id": "optional-accessories",
+      "name": "Optional · Accessories",
+      "emoji": "arm",
+      "prog": "double",
+      "ex": [
+        {
+          "id": "0227",
+          "sets": 2,
+          "reps": 18,
+          "repsMin": 12,
+          "weight": 0,
+          "restSec": 75,
+          "note": "Use a light cable load and stop with at least 3 clean reps left."
+        },
+        {
+          "id": "0417",
+          "sets": 2,
+          "reps": 18,
+          "repsMin": 12,
+          "weight": 0,
+          "restSec": 75,
+          "dbLoad": "each",
+          "note": "Use a light load and pause at the bottom. Log weight per dumbbell."
+        },
+        {
+          "id": "0979",
+          "sets": 2,
+          "reps": 24,
+          "repsMin": 20,
+          "weight": 0,
+          "restSec": 60,
+          "note": "Use a light band and keep your chest and hips square. Reps are per side.",
+          "side": true
+        }
+      ]
+    }
+  ],
+  "customEx": []
+}
